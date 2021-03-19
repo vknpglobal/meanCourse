@@ -1,1 +1,60 @@
-<p>products works!</p>
+  <div class="btn-group mb-4">
+    <a class="btn btn-primary" [ngClass]="{'active' : view === 'list'}" (click)="view = 'list'; getAllProducts()">Products List</a>
+    <a class="btn btn-primary" [ngClass]="{'active' : view === 'add'}" (click)="view = 'add'">Add Product</a>
+  </div>
+
+<ng-container *ngIf="view === 'add'">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="card p-4">
+      <div class="row">
+        <div class="col-md-3">
+          <label for="name" class="form-label fw-bold">Product Name</label>
+          <input type="text" class="form-control" formControlName="name" id="name" [ngClass]="{'is-invalid' : productForm.get('name').invalid && (productForm.get('name').dirty || productForm.get('name').touched)}">
+          <div *ngIf="productForm.get('name').invalid && (productForm.get('name').dirty || productForm.get('name').touched)" class="text-danger">
+            <div *ngIf="productForm.get('name').errors?.required">Name is required.</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="price" class="form-label fw-bold">Product Price</label>
+          <input type="text" class="form-control" formControlName="price" id="price" [ngClass]="{'is-invalid' : productForm.get('price').invalid && (productForm.get('price').dirty || productForm.get('price').touched)}">
+          <div *ngIf="productForm.get('price').invalid && (productForm.get('price').dirty || productForm.get('price').touched)" class="text-danger">
+            <div *ngIf="productForm.get('price').errors?.required">Price is required.</div>
+            <div *ngIf="productForm.get('price').errors?.minlength"> Price should be greater then 0. </div>
+            <div *ngIf="productForm.get('price').errors?.pattern"> Only numbers are allowed. </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="productImage" class="form-label fw-bold">Product Image</label>
+          <input type="file" class="form-control" formControlName="productImage" id="productImage">
+          <div *ngIf="productForm.get('productImage').invalid && (productForm.get('productImage').dirty || productForm.get('productImage').touched)" class="text-danger">
+            <div *ngIf="productForm.get('productImage').errors?.required">Product image is required.</div>
+          </div>
+        </div>
+        <div class="col-md-3 d-flex">
+          <button type="submit" class="btn btn-success align-self-end">Save Product</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="view === 'list'">
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Sr. No.</th>
+      <th>Product Name</th>
+      <th>Product Price</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of dataSource; index as i;">
+      <td>{{i+1}}</td>
+      <td>{{product.name}}</td>
+      <td>{{product.price}}</td>
+      <td><a (click)="removeProduct(product)">X</a></td>
+    </tr>
+  </tbody>
+  </table>
+</ng-container>

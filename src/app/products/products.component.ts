@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../services/data.service';
 
 @Component({
@@ -8,7 +9,17 @@ import { DataService } from '../services/data.service';
 })
 export class ProductsComponent implements OnInit {
 
-  products: any[] = [];
+  view = 'list';
+  products: any = [];
+  displayedColumns: string[] = ['position', 'name', 'price', 'action'];
+  dataSource : any = [];
+  onlyNumber = new RegExp('^[0-9]*$');
+
+  productForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    price: new FormControl('', [Validators.required, Validators.pattern(this.onlyNumber), Validators.min(5)]),
+    productImage: new FormControl('', Validators.required)
+  })
 
   constructor(private dataService: DataService) { }
 
@@ -17,7 +28,21 @@ export class ProductsComponent implements OnInit {
   }
 
   getAllProducts() {
-    this.dataService.getProducts('user').subscribe(res => {
+    this.dataService.getProducts('products').subscribe(res => {
+      this.dataSource  = res.products;
+    })
+  }
+
+  onSubmit(){
+    let product:any = [];
+    console.log(this.productForm.value)
+    this.dataService.addProduct('products', this.productForm.value).subscribe(res => {
+      console.log(res)
+    })
+  }
+
+  removeProduct(product) {
+    this.dataService.deleteProduct('products/'+product._id).subscribe(res => {
       console.log(res)
     })
   }
