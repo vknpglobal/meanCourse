@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DataService } from '../services/data.service';
+import { ProductService } from '../services/product.service';
 
 @Component({
   selector: 'app-products',
@@ -11,40 +11,62 @@ export class ProductsComponent implements OnInit {
 
   view = 'list';
   products: any = [];
-  displayedColumns: string[] = ['position', 'name', 'price', 'action'];
-  dataSource : any = [];
+  dataSource: any = [];
   onlyNumber = new RegExp('^[0-9]*$');
+  selectedProduct: any = {};
 
   productForm = new FormGroup({
     name: new FormControl('', Validators.required),
     price: new FormControl('', [Validators.required, Validators.pattern(this.onlyNumber), Validators.min(5)]),
-    productImage: new FormControl('', Validators.required)
+    // productImage: new FormControl('', Validators.required)
   })
 
-  constructor(private dataService: DataService) { }
+  constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
     this.getAllProducts()
   }
 
   getAllProducts() {
-    this.dataService.getProducts('products').subscribe(res => {
-      this.dataSource  = res.products;
+    this.productService.getProducts('products').subscribe(res => {
+      this.dataSource = res.products;
     })
   }
 
-  onSubmit(){
-    let product:any = [];
-    console.log(this.productForm.value)
-    this.dataService.addProduct('products', this.productForm.value).subscribe(res => {
-      console.log(res)
-    })
+  onSubmit() {
+    if (this.view === 'add') {
+      this.productService.addProduct('products', this.productForm.value).subscribe(res => {
+        console.log(res)
+        this.view = 'list';
+        this.getAllProducts()
+      })
+    } else {
+      const productBody = [
+        { "propName": "name", "value": this.productForm.value.name },
+        { "propName": "price", "value": this.productForm.value.price },
+      ];
+
+      this.productService.editProduct('products/' + this.selectedProduct._id, productBody).subscribe(res => {
+        console.log('Product updated successfully.')
+        this.view = 'list';
+        this.getAllProducts()
+      })
+    }
   }
 
   removeProduct(product) {
-    this.dataService.deleteProduct('products/'+product._id).subscribe(res => {
+    this.productService.deleteProduct('products/' + product._id).subscribe(res => {
       console.log(res)
+      this.getAllProducts()
     })
+  }
+
+  editProduct(product) {
+    this.productForm.controls.name.setValue(product.name);
+    this.productForm.controls.price.setValue(product.price);
+    this.selectedProduct = product;
+    console.log(this.selectedProduct)
+    this.view = 'edit';
   }
 
 }

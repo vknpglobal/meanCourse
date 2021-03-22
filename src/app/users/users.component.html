@@ -1,1 +1,79 @@
-<p>users works!</p>
+<app-header></app-header>
+<div class="p-4">
+  <div class="btn-group mb-4" *ngIf="view != 'edit'">
+    <a class="btn btn-primary" [ngClass]="{'active' : view === 'list'}" (click)="view = 'list'; getAllUsers()">Users
+      List</a>
+    <a class="btn btn-primary" [ngClass]="{'active' : view === 'add'}" (click)="view = 'add'; userForm.reset()">Add
+      Users</a>
+  </div>
+  <h5 *ngIf="view === 'edit'">Edit Product</h5>
+
+  <ng-container *ngIf="view === 'add' || view === 'edit'">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="card p-4">
+        <div class="row">
+          <div class="col-md-3">
+            <label for="name" class="form-label fw-bold">Full Name</label>
+            <input type="text" class="form-control" formControlName="name" id="name"
+              [ngClass]="{'is-invalid' : userForm.get('name').invalid && (userForm.get('name').dirty || userForm.get('name').touched)}">
+            <small *ngIf="userForm.get('name').invalid && (userForm.get('name').dirty || userForm.get('name').touched)"
+              class="text-danger position-absolute">
+              <span *ngIf="userForm.get('name').errors?.required">Name is required.</span>
+            </small>
+          </div>
+          <div class="col-md-3">
+            <label for="email" class="form-label fw-bold">Email</label>
+            <input type="text" class="form-control" formControlName="email" id="email"
+              [ngClass]="{'is-invalid' : userForm.get('email').invalid && (userForm.get('email').dirty || userForm.get('email').touched)}">
+            <small
+              *ngIf="userForm.get('email').invalid && (userForm.get('email').dirty || userForm.get('email').touched)"
+              class="text-danger position-absolute">
+              <span *ngIf="userForm.get('email').errors?.required">email is required.</span>
+            </small>
+          </div>
+          <div class="col-md-3">
+            <label for="password" class="form-label fw-bold">Password</label>
+            <input type="password" class="form-control" formControlName="password" id="password"
+              [ngClass]="{'is-invalid' : userForm.get('password').invalid && (userForm.get('password').dirty || userForm.get('password').touched)}">
+            <small
+              *ngIf="userForm.get('password').invalid && (userForm.get('password').dirty || userForm.get('password').touched)"
+              class="text-danger position-absolute">
+              <span *ngIf="userForm.get('password').errors?.required">Password is required.</span>
+            </small>
+          </div>
+          <div class="col-md-3 d-flex">
+            <button type="submit" class="btn btn-success align-self-end">Save User</button>
+            <button type="reset" class="btn btn-secondary align-self-end ms-2"
+              (click)="view = 'list'; userForm.reset()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="view === 'list'">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Sr. No.</th>
+          <th>User Name</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of dataSource; index as i;">
+          <td>{{i+1}}</td>
+          <td>{{user.name}}</td>
+          <td>{{user.email}}</td>
+          <td>
+            <button type="button" class="btn btn-outline-danger" (click)="removeUser(user)"><i
+                class="bi bi-trash-fill"></i></button>
+            <button type="button" class="btn btn-outline-primary ms-2" (click)="editUser(user)"><i
+                class="bi bi-pencil"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>
