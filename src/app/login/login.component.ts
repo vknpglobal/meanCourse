@@ -25,8 +25,10 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.authService.loginUser('user/login', this.loginForm.value).subscribe(res => {
+      console.log(res)
       if (res.statusCode === 200) {
         sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('token', res.token);
         this.authService.isLoggedIn = true;
         this.router.navigate(['/users'])
       } else {
