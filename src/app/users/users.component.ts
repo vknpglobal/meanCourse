@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AlertService } from '../alert';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -19,7 +20,12 @@ export class UsersComponent implements OnInit {
     password: new FormControl('', Validators.required)
   })
 
-  constructor(private userService: UserService) { }
+  options = {
+    autoClose: true,
+    keepAfterRouteChange: false
+};
+
+  constructor(private userService: UserService, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getAllUsers()
@@ -37,7 +43,8 @@ export class UsersComponent implements OnInit {
     this.userService.addUser('user/signup', this.userForm.value).subscribe(res => {
       console.log(res)
       this.view = 'list';
-      this.getAllUsers()
+      this.getAllUsers();
+      this.alertService.success('The user has been added.', this.options)
     })
   } else {
     const userBody = [
@@ -46,7 +53,8 @@ export class UsersComponent implements OnInit {
     this.userService.editUser('user/' + this.selectedUser._id, userBody).subscribe(res => {
       console.log(res)
       this.view = 'list';
-      this.getAllUsers()
+      this.getAllUsers();
+      this.alertService.success('The user has been updated.', this.options)
     })
   }
   }
@@ -65,7 +73,8 @@ export class UsersComponent implements OnInit {
   removeUser(user) {
     this.userService.deleteUser('user/' + user._id).subscribe(res => {
       console.log(res)
-      this.getAllUsers()
+      this.getAllUsers();
+      this.alertService.success('The user has been removed.', this.options)
     })
   }
 }

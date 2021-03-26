@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AlertService } from '../alert/alert.service';
 import { ProductService } from '../services/product.service';
 
 @Component({
@@ -21,7 +22,12 @@ export class ProductsComponent implements OnInit {
     // productImage: new FormControl('', Validators.required)
   })
 
-  constructor(private productService: ProductService) { }
+  options = {
+    autoClose: true,
+    keepAfterRouteChange: false
+};
+
+  constructor(private productService: ProductService, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getAllProducts()
@@ -38,7 +44,8 @@ export class ProductsComponent implements OnInit {
       this.productService.addProduct('products', this.productForm.value).subscribe(res => {
         console.log(res)
         this.view = 'list';
-        this.getAllProducts()
+        this.getAllProducts();
+        this.alertService.success('The product has been added.', this.options)
       })
     } else {
       const productBody = [
@@ -50,6 +57,7 @@ export class ProductsComponent implements OnInit {
         console.log('Product updated successfully.')
         this.view = 'list';
         this.getAllProducts()
+        this.alertService.success('The product has been updated.', this.options)
       })
     }
   }
@@ -58,6 +66,7 @@ export class ProductsComponent implements OnInit {
     this.productService.deleteProduct('products/' + product._id).subscribe(res => {
       console.log(res)
       this.getAllProducts()
+      this.alertService.success('The product has been removed.', this.options)
     })
   }
 

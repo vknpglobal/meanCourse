@@ -12,7 +12,7 @@
         <input type="password" name="password" class="form-control" formControlName="password" id="password" [ngClass]="{'is-invalid' : loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)}">
       </div>
       <div>
-        <button type="submit" class="btn btn-success w-100 text-center">Sign In</button>
+        <button type="submit" class="btn btn-success w-100 text-center" [disabled]="loginForm.invalid">Sign In</button>
       </div>
     </form>
     </div>

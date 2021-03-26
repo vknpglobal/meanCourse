@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { HeaderComponent } from './header/header.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { HttpRequestInterceptor } from './interceptor/http-request.interceptor';
+import { AlertModule } from './alert/alert.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { HttpRequestInterceptor } from './interceptor/http-request.interceptor';
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
+    AlertModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }],
   bootstrap: [AppComponent]

@@ -1,9 +1,9 @@
   <app-header></app-header>
   <div class="p-4">
     <div class="btn-group mb-4" *ngIf="view != 'edit'">
-      <a class="btn btn-primary" [ngClass]="{'active' : view === 'list'}"
+      <a class="btn btn-outline-primary" [ngClass]="{'active' : view === 'list'}"
         (click)="view = 'list'; getAllProducts()">Products List</a>
-      <a class="btn btn-primary" [ngClass]="{'active' : view === 'add'}" (click)="view = 'add'; productForm.reset()">Add
+      <a class="btn btn-outline-primary" [ngClass]="{'active' : view === 'add'}" (click)="view = 'add'; productForm.reset()">Add
         Product</a>
     </div>
     <h5 *ngIf="view === 'edit'">Edit Product</h5>
